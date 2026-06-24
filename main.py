@@ -73,9 +73,21 @@ def delete_task():
     except ValueError:
         print("Please enter a valid number (task ID)")
 
+def filter_tasks():
+    status = input("Filter by status: (open / done): ").strip().lower()
+
+    if status not in ["open", "done"]:
+        print("Invalid status")
+        return
+    
+    cursor.execute("""SELECT * FROM tasks WHERE status = ?""", (status,))
+    rows = cursor.fetchall()
+
+    for row in rows:
+        print(f"ID: {row[0]} | Task: {row[1]} | Status: {row[2]}")
 
 def menu():
-    menu_options = ["1. Add task", "2. Show tasks", "3. Update task", "4. Delete task", "5. Exit"]
+    menu_options = ["1. Add task", "2. Show tasks", "3. Update task", "4. Delete task", "5. Filter tasks", "6. Exit"]
     for menu_option in menu_options:
         print(f"{menu_option}")
 
@@ -101,9 +113,11 @@ def main():
             print("Task deleted successfully")
 
         elif choice == "5":
+            filter_tasks()
+            input("Press Enter to continue...")
+
+        elif choice == "6":
             break
 
         else:
             print("Invalid option") 
-
-main()
