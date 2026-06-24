@@ -89,10 +89,10 @@ Choose option: 1
 What task do you want to add? Learn Python  
 Task added successfully
 
-## 🔧 Possible Improvements
-- Add task priorities
+## 🔧 Future Improvements
+- Add task priorities (Done)
+- Filter tasks (open / done) (Done)
 - Add deadlines
-- Filter tasks (open / done)
 - Add search functionality
 - Improve UI formatting
 - Convert to GUI application
