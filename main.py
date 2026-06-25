@@ -1,4 +1,9 @@
 import sqlite3
+from datetime import datetime
+
+# ======================
+# DATABASE
+# ======================
 
 conn = sqlite3.connect("tasks.db")
 cursor = conn.cursor()
@@ -8,29 +13,55 @@ CREATE TABLE IF NOT EXISTS tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
     status TEXT,
-    priority TEXT
+    priority TEXT,
+    due_date TEXT
 );
 """)
+
+# ======================
+# HELPER LOGIC
+# ======================
+
+
+def is_overdue(due_date_str):
+    due_date = datetime.strptime(due_date_str, "%Y-%m-%d %H:%M")
+    return due_date < datetime.now()
+
+
+# ======================
+# CRUD FUNCTIONS
+# ======================
 
 
 def show_tasks():
     cursor.execute("""SELECT * FROM tasks""")
     rows = cursor.fetchall()
-    
+
     if not rows:
         print("No tasks found")
         return
-    
+
     for row in rows:
-        print(f"ID: {row[0]} | Task: {row[1]} | Status: {row[2]} | Priority: {row[3]}")
+        if is_overdue(row[4]):
+            status_extra = " | OVERDUE"
+        else:
+            status_extra = ""
+
+
+        print(f"ID: {row[0]} | Task: {row[1]} | Status: {row[2]} | Priority: {row[3]} | Due: {row[4]}{status_extra}")
 
 
 def add_task():
     user_task = input("What task do you want to add? Write a new task: ")
+
+    user_due_time = input("Enter due date (YYYY-MM-DD HH:MM): ")
+
+    due_date = datetime.strptime(user_due_time, "%Y-%m-%d %H:%M")
+
     cursor.execute("""
-    INSERT INTO tasks (title, status, priority)
-    VALUES (?, 'open', 'low');
-    """, (user_task,))
+    INSERT INTO tasks (title, status, priority, due_date)
+    VALUES (?, 'open', 'low', ?);
+    """, (user_task, due_date.strftime("%Y-%m-%d %H:%M"),))
     conn.commit()
 
 
@@ -108,7 +139,18 @@ def filter_tasks():
     rows = cursor.fetchall()
 
     for row in rows:
-        print(f"ID: {row[0]} | Task: {row[1]} | Status: {row[2]} | Priority: {row[3]}")
+        
+        if is_overdue(row[4]):
+            status_extra = " | OVERDUE"
+        else:
+            status_extra = ""
+
+        print(f"ID: {row[0]} | Task: {row[1]} | Status: {row[2]} | Priority: {row[3]}{status_extra}")
+
+
+# ======================
+# UI
+# ======================
 
 
 def menu():
@@ -150,5 +192,5 @@ def main():
 
         else:
             print("Invalid option") 
-            
+
 main()
