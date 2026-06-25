@@ -98,8 +98,8 @@ python main.py
 8. Exit
 
 ➕ Add task
-
 Choose option: 1
+
 What task do you want to add? Learn Python
 Enter due date (YYYY-MM-DD HH:MM): 2026-06-26 18:00
 Task added successfully
