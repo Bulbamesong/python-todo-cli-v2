@@ -25,7 +25,27 @@ CREATE TABLE IF NOT EXISTS tasks (
 
 def is_overdue(due_date_str):
     due_date = datetime.strptime(due_date_str, "%Y-%m-%d %H:%M")
+
     return due_date < datetime.now()
+
+
+def format_task(row):
+
+    if is_overdue(row[4]):
+        status_extra = " | OVERDUE"
+    else:
+        status_extra = ""
+
+    return f"ID: {row[0]} | Task: {row[1]} | Status: {row[2]} | Priority: {row[3]} | Due: {row[4]}{status_extra}"
+
+
+def print_tasks(rows):
+    if not rows:
+        print("No tasks found")
+        return
+    
+    for row in rows:
+        print(format_task(row))
 
 
 # ======================
@@ -34,21 +54,10 @@ def is_overdue(due_date_str):
 
 
 def show_tasks():
-    cursor.execute("""SELECT * FROM tasks""")
+    cursor.execute("""SELECT * FROM tasks ORDER BY due_date""")
     rows = cursor.fetchall()
 
-    if not rows:
-        print("No tasks found")
-        return
-
-    for row in rows:
-        if is_overdue(row[4]):
-            status_extra = " | OVERDUE"
-        else:
-            status_extra = ""
-
-
-        print(f"ID: {row[0]} | Task: {row[1]} | Status: {row[2]} | Priority: {row[3]} | Due: {row[4]}{status_extra}")
+    print_tasks(rows)
 
 
 def add_task():
@@ -138,37 +147,34 @@ def filter_tasks():
     cursor.execute("""SELECT * FROM tasks WHERE status = ?""", (status,))
     rows = cursor.fetchall()
 
-    for row in rows:
-        
-        if is_overdue(row[4]):
-            status_extra = " | OVERDUE"
-        else:
-            status_extra = ""
-
-        print(f"ID: {row[0]} | Task: {row[1]} | Status: {row[2]} | Priority: {row[3]}{status_extra}")
+    print_tasks(rows)
 
 
 def search_tasks():
-    user_request = input("Enter search text: ").strip().lower()
+    user_request = input("Enter search title/status/priority: ").strip().lower()
     search_pattern = f"%{user_request}%"
     cursor.execute("""
     SELECT * FROM tasks WHERE title LIKE ?
-    """, (search_pattern,))
+    OR status LIKE ? OR priority LIKE ?""", (search_pattern, search_pattern, search_pattern,))
     rows = cursor.fetchall()
 
-    if not rows:
-        print("No tasks found")
-        return
+    print_tasks(rows)
+
+
+def filter_overdue_tasks():
+    cursor.execute("""SELECT * FROM tasks ORDER BY due_date""")
+    rows = cursor.fetchall()
+
+    found = False
 
     for row in rows:
-
         if is_overdue(row[4]):
-            status_extra = " | OVERDUE"
-        else:
-            status_extra = ""
+            print(format_task(row))
+            found = True
 
-        print(f"ID: {row[0]} | Task: {row[1]} | Status: {row[2]} | Priority: {row[3]} | Due: {row[4]}{status_extra}")
-
+    if not found:
+        print("No tasks found")
+        
 
 # ======================
 # UI
@@ -176,7 +182,7 @@ def search_tasks():
 
 
 def menu():
-    menu_options = ["1. Add task", "2. Show tasks", "3. Update task", "4. Delete task", "5. Filter tasks", "6. Update priority", "7. Search tasks", "8. Exit"]
+    menu_options = ["1. Add task", "2. Show tasks", "3. Update task", "4. Delete task", "5. Filter tasks", "6. Update priority", "7. Search tasks", "8. Show overdue tasks", "9. Exit"]
     for menu_option in menu_options:
         print(f"{menu_option}")
 
@@ -215,9 +221,14 @@ def main():
             input("Press Enter to continue...")
 
         elif choice == "8":
-            break
+            filter_overdue_tasks()
+            input("Press Enter to continue...")
+
+        elif choice == "9":
+            break    
 
         else:
             print("Invalid option") 
+
 
 main()
