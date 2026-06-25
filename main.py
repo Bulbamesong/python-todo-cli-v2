@@ -148,15 +148,38 @@ def filter_tasks():
         print(f"ID: {row[0]} | Task: {row[1]} | Status: {row[2]} | Priority: {row[3]}{status_extra}")
 
 
+def search_tasks():
+    user_request = input("Enter search text: ").strip().lower()
+    search_pattern = f"%{user_request}%"
+    cursor.execute("""
+    SELECT * FROM tasks WHERE title LIKE ?
+    """, (search_pattern,))
+    rows = cursor.fetchall()
+
+    if not rows:
+        print("No tasks found")
+        return
+
+    for row in rows:
+
+        if is_overdue(row[4]):
+            status_extra = " | OVERDUE"
+        else:
+            status_extra = ""
+
+        print(f"ID: {row[0]} | Task: {row[1]} | Status: {row[2]} | Priority: {row[3]} | Due: {row[4]}{status_extra}")
+
+
 # ======================
 # UI
 # ======================
 
 
 def menu():
-    menu_options = ["1. Add task", "2. Show tasks", "3. Update task", "4. Delete task", "5. Filter tasks", "6. Update priority", "7. Exit"]
+    menu_options = ["1. Add task", "2. Show tasks", "3. Update task", "4. Delete task", "5. Filter tasks", "6. Update priority", "7. Search tasks", "8. Exit"]
     for menu_option in menu_options:
         print(f"{menu_option}")
+
 
 def main():
     while True:
@@ -188,6 +211,10 @@ def main():
             print("Priority updated successfully.")
 
         elif choice == "7":
+            search_tasks()
+            input("Press Enter to continue...")
+
+        elif choice == "8":
             break
 
         else:
