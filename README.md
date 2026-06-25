@@ -35,25 +35,20 @@ Table: `tasks`
 - `id` INTEGER PRIMARY KEY AUTOINCREMENT — unique task ID
 - `title` TEXT — task description
 - `status` TEXT — task status (open / done)
+- `due_date` TEXT — task due date
 
 ---
 
 ## ⚙️ How It Works
 
-The application runs in a loop and displays a menu:
+The program runs in a loop and displays a menu.
+Each option triggers a specific function:
 
-1. Add task
-2. Show tasks
-3. Update task
-4. Delete task
-5. Exit
-
-Each option calls a corresponding function:
-
-- Add task → inserts a new task into the database
-- Show tasks → displays all tasks
-- Update task → changes task status to "done"
-- Delete task → removes a task by ID
+- Create → INSERT task into database
+- Read → SELECT tasks from database
+- Update → change status or priority
+- Delete → remove task by ID
+- Search / Filter → SQL queries with conditions
 
 ---
 
@@ -98,8 +93,8 @@ python main.py
 8. Exit
 
 ➕ Add task
-
 Choose option: 1
+
 What task do you want to add? Learn Python
 Enter due date (YYYY-MM-DD HH:MM): 2026-06-26 18:00
 Task added successfully
@@ -116,13 +111,6 @@ Choose option: 3
 Which task do you want to update? Choose the task ID: 1
 Task updated successfully
 
-⭐ Update priority
-Choose option: 6
-
-Task ID: 1
-Priority: high
-Priority updated successfully
-
 ❌ Delete task
 Choose option: 4
 
@@ -135,14 +123,26 @@ Choose option: 5
 Filter by status: open
 ID: 1 | Task: Learn Python | Status: open | Priority: high | Due: 2026-06-26 18:00
 
+⭐ Update priority
+Choose option: 6
+
+Task ID: 1
+Priority: high
+Priority updated successfully
+
 🔍 Search tasks
 Choose option: 7
 
 Enter search text: python
 ID: 1 | Task: Learn Python | Status: open | Priority: high | Due: 2026-06-26 18:00
 
-🚪 Exit
+📋 Filter overdue tasks
 Choose option: 8
+
+ID: 1 | Task: Learn Python | Status: open | Priority: low | Due: 2026-06-26 18:00 | OVERDUE
+
+🚪 Exit
+Choose option: 9
 
 ---
 
@@ -152,6 +152,10 @@ Choose option: 8
 - Added due date support
 - Added OVERDUE indicator (calculated in runtime)
 - Extended CLI menu (filter + priority update)
+- Search tasks by title
+- Added overdue task filter
+
+---
 
 ## 🔧 Future Improvements
 
