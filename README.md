@@ -7,13 +7,15 @@ The project demonstrates a basic CRUD system with persistent data storage.
 
 ## 🚀 Features
 
-- Add new tasks
-- Show all tasks
-- Update task status (open → done)
+- Add tasks with priority and due date
+- View all tasks with OVERDUE detection
+- Update task status (open ↔ done)
+- Update task priority (low / medium / high)
 - Delete tasks
-- Persistent storage using SQLite
+- Filter tasks by status
+- Persistent SQLite storage
 - Input validation and error handling
-- Simple CLI menu system
+- CLI-based interface
 
 ---
 
@@ -86,11 +88,24 @@ python main.py
 2. Show tasks
 3. Update task
 4. Delete task
-5. Exit
-
-Choose option: 1  
-What task do you want to add? Learn Python  
+5. Filter tasks
+6. Update priority
+7. Exit
+   
+Choose option: 1
+What task do you want to add? Learn Python
+Enter due date (YYYY-MM-DD HH:MM): 2026-06-26 18:00
 Task added successfully
+
+Choose option: 2
+ID: 1 | Task: Learn Python | Status: open | Priority: low | Due: 2026-06-26 18:00
+ID: 2 | Task: Finish project | Status: open | Priority: high | Due: 2026-06-24 12:00 | OVERDUE
+
+## 🔧 Update summary
+- Added task priority (low / medium / high)
+- Added due date support
+- Added OVERDUE indicator (calculated in runtime)
+- Extended CLI menu (filter + priority update)
 
 ## 🔧 Future Improvements
 
