@@ -152,6 +152,7 @@ Choose option: 8
 - Added due date support
 - Added OVERDUE indicator (calculated in runtime)
 - Extended CLI menu (filter + priority update)
+- Search tasks by title
 
 ## 🔧 Future Improvements
 
