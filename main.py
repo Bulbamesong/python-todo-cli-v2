@@ -61,17 +61,22 @@ def show_tasks():
 
 
 def add_task():
-    user_task = input("What task do you want to add? Write a new task: ")
+    try:
 
-    user_due_time = input("Enter due date (YYYY-MM-DD HH:MM): ")
+        user_task = input("What task do you want to add? Write a new task: ")
 
-    due_date = datetime.strptime(user_due_time, "%Y-%m-%d %H:%M")
+        user_due_time = input("Enter due date (YYYY-MM-DD HH:MM): ")
 
-    cursor.execute("""
-    INSERT INTO tasks (title, status, priority, due_date)
-    VALUES (?, 'open', 'low', ?);
-    """, (user_task, due_date.strftime("%Y-%m-%d %H:%M"),))
-    conn.commit()
+        due_date = datetime.strptime(user_due_time, "%Y-%m-%d %H:%M")
+
+        cursor.execute("""
+        INSERT INTO tasks (title, status, priority, due_date)
+        VALUES (?, 'open', 'low', ?);
+        """, (user_task, due_date.strftime("%Y-%m-%d %H:%M"),))
+        conn.commit()
+    
+    except ValueError:
+        print("Please enter a valid date")
 
 
 def update_priority():
@@ -225,6 +230,7 @@ def main():
             input("Press Enter to continue...")
 
         elif choice == "9":
+            conn.close()
             break    
 
         else:
